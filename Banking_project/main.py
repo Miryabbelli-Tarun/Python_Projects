@@ -17,10 +17,14 @@ class Account:
 class Bank:
     def __init__(self):
         self.accounts={}
-    def create_account(self,acc_no,name,balance):
+        self.next_acc_no=1001
+    def create_account(self,name,balance):
+        acc_no=self.next_acc_no
+        self.next_acc_no+=1
         account=Account(acc_no,name,balance)
         self.accounts[acc_no]=account
         print('Account created succesfully')
+        print(f'your account number is {acc_no}')
     def get_account(self,acc_no):
         if acc_no in self.accounts:
             return self.accounts[acc_no]
@@ -46,23 +50,22 @@ def main():
         choice=input('Enter choice :')
 
         if choice=='1':
-            acc_no=input('Enter account number(4 digits):')
             name=input('Enter name:')
             balance=int(input('Enter balance:'))
-            bank.create_account(acc_no,name,balance)
+            bank.create_account(name,balance)
         elif choice=='2':
-            acc_no=input('Enter bank account number:')
+            acc_no=int(input('Enter bank account number:'))
             account=bank.get_account(acc_no)
             if account:
                 account.show_balance()
         elif choice=='3':
-            acc_no=input('Enter bank account number:')
+            acc_no=int(input('Enter bank account number:'))
             amount=int(input('Enter amount to deposite:'))
             account=bank.get_account(acc_no)
             if account:
                 account.deposite(amount)
         elif choice=='4':
-            acc_no=input('Enter account number:')
+            acc_no=int(input('Enter bank account number:'))
             amount=int(input('Enter amount to withdraw:'))
             account=bank.get_account(acc_no)
             if account:
