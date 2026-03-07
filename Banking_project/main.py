@@ -4,19 +4,30 @@ class Account:
         self.pin_number=pin_number
         self.name=name
         self.balance=balance 
+        self.transactions=[]
     def show_balance(self):
         print(f'balance amount:{self.balance}')
+        self.transactions.append('fetch the balance')
     def deposite(self,amount):
         self.balance+=amount
         print('Deposite succesfull')
+        self.transactions.append(f'{amount} deposited')
     def withdraw(self,amount):
         if self.balance<amount or amount<0:
             print('insufficent balance')
         else:
             self.balance-=amount
             print('withdraw succesful')
+            self.transactions.append(f"{amount} withdraw")
     def get_pin(self):
         return self.pin_number
+    def show_transactions(self):
+        if not self.transactions:
+            print('no transactions yet!!')
+            return
+        print("-------Transactions history-----------")
+        for transaction in self.transactions:
+            print(f'{transaction}')
 class Bank:
     def __init__(self):
         self.accounts={}
@@ -57,6 +68,8 @@ class Bank:
         reciver.balance+=amount
         print('money transfer succesfull')
         print(f'{amount} transferd from acount number {sender_acc_no} to {reciver_acc_no}')
+        sender.transactions.append(f'{amount} transferd to {reciver_acc_no}')
+        reciver.transactions.append(f"reciver {amount} from {sender_acc_no}")
 
 
 def main():
@@ -69,6 +82,7 @@ def main():
         print('4.withdraw amount')
         print('5.show all accounts')
         print('6.tranfer money ')
+        print('7.show transaction history')
         print('10.exit')
 
         choice=input('Enter choice :')
@@ -100,7 +114,7 @@ def main():
         elif choice=='4':
             acc_no=int(input('Enter bank account number:'))
             amount=int(input('Enter amount to withdraw:'))
-            pin_number=input('Enter pin number')
+            pin_number=input('Enter pin number:')
             account=bank.get_account(acc_no)
             if account:
                 if pin_number==account.get_pin():
@@ -112,12 +126,21 @@ def main():
         elif choice=='6':
             sender_acc_no=int(input('Enter your account number:'))
             reciver_acc_no=int(input('Enter reciver account number:'))
-            pin_number=input('Enter your pin number')
+            pin_number=input('Enter your pin number:')
             amount=int(input('Enter amount to send:'))
             account=bank.get_account(sender_acc_no)
             if account:
                 if pin_number==account.get_pin():
                     bank.tranfer_amount(sender_acc_no,reciver_acc_no,amount)
+                else:
+                    print('wrong pin')
+        elif choice=='7':
+            acc_no=int(input('Enter your account number:'))
+            pin_number=input('Enter pin number:')
+            account=bank.get_account(acc_no)
+            if account:
+                if pin_number==account.get_pin():
+                    account.show_transactions()
                 else:
                     print('wrong pin')
 
