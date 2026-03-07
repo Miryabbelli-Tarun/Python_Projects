@@ -38,6 +38,26 @@ class Bank:
         for acc in self.accounts.values():
             print(f'{acc.account_no} |{acc.pin_number}   | {acc.name} | {acc.balance}')
 
+    def tranfer_amount(self,sender_acc_no,reciver_acc_no,amount):
+        sender=self.get_account(sender_acc_no)
+        reciver=self.get_account(reciver_acc_no)
+
+        if not sender or not reciver:
+            print('one account is not found please check account numbers')
+            return
+        if amount<0:
+            print('invalid amount')
+            return
+        
+        if sender.balance<amount:
+            print('insuffecient fundes')
+            return
+        
+        sender.balance-=amount
+        reciver.balance+=amount
+        print('money transfer succesfull')
+        print(f'{amount} transferd from acount number {sender_acc_no} to {reciver_acc_no}')
+
 
 def main():
     bank=Bank()
@@ -48,6 +68,7 @@ def main():
         print('3.deposit amount')
         print('4.withdraw amount')
         print('5.show all accounts')
+        print('6.tranfer money ')
         print('10.exit')
 
         choice=input('Enter choice :')
@@ -88,6 +109,18 @@ def main():
                     print('wrong pin')
         elif choice=='5':
             bank.show_all_accounts()
+        elif choice=='6':
+            sender_acc_no=int(input('Enter your account number:'))
+            reciver_acc_no=int(input('Enter reciver account number:'))
+            pin_number=input('Enter your pin number')
+            amount=int(input('Enter amount to send:'))
+            account=bank.get_account(sender_acc_no)
+            if account:
+                if pin_number==account.get_pin():
+                    bank.tranfer_amount(sender_acc_no,reciver_acc_no,amount)
+                else:
+                    print('wrong pin')
+
         elif choice=='10':
             break
         else:
