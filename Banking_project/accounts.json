@@ -1,0 +1,19 @@
+{
+    "1001": {
+        "name": "tarun",
+        "pin_number": "1111",
+        "balance": 2000,
+        "transactions": [
+            "fetch the balance",
+            "1000 deposited"
+        ]
+    },
+    "1002": {
+        "name": "rahul",
+        "pin_number": "4040",
+        "balance": 20000,
+        "transactions": [
+            "fetch the balance"
+        ]
+    }
+}

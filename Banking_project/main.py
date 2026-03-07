@@ -1,3 +1,4 @@
+import json
 class Account:
     def __init__(self,acc_no,pin_number,name,balance):
         self.account_no=acc_no
@@ -31,7 +32,7 @@ class Account:
 class Bank:
     def __init__(self):
         self.accounts={}
-        self.next_acc_no=1001
+        self.next_acc_no=1001 
     def create_account(self,pin_number,name,balance):
         acc_no=self.next_acc_no
         self.next_acc_no+=1
@@ -71,9 +72,40 @@ class Bank:
         sender.transactions.append(f'{amount} transferd to {reciver_acc_no}')
         reciver.transactions.append(f"reciver {amount} from {sender_acc_no}")
 
-
+    #store data in json files
+    def save_accounts(self):
+        data={}
+        for acc_no,acc in self.accounts.items():
+            data[acc_no]={
+                'name':acc.name,
+                'pin_number':acc.pin_number,
+                'balance':acc.balance,
+                'transactions':acc.transactions
+            }
+        with open('accounts.json','w') as f:
+            json.dump(data,f,indent=4)
+    def load_data(self):
+        try:
+            with open('accounts.json','r') as f:
+                data=json.load(f)
+            for acc_no,info in data.items():
+                # Account(acc_no,pin_number,name,balance)
+                account=Account(
+                    int(acc_no),
+                    info['pin_number'],
+                    info['name'],
+                    info['balance']
+                )
+                account.transactions=info['transactions']
+                self.accounts[int(acc_no)]=account
+            if self.accounts:
+                self.next_acc_no=max(self.accounts.keys()) + 1
+        except FileNotFoundError:
+            print('file not found')
+            return
 def main():
     bank=Bank()
+    bank.load_data()
     while True:
         print('====================Bank system================')
         print('1.create account')
@@ -92,6 +124,7 @@ def main():
             pin_number=input('Enter pin number:')
             balance=int(input('Enter balance:'))
             bank.create_account(pin_number,name,balance)
+            bank.save_accounts()
         elif choice=='2':
             acc_no=int(input('Enter bank account number:'))
             pin_number=input('Enter pin number:')
@@ -99,6 +132,7 @@ def main():
             if account:
                 if pin_number==account.get_pin():
                     account.show_balance()
+                    bank.save_accounts()
                 else:
                     print('wrong pin number')
         elif choice=='3':
@@ -109,6 +143,7 @@ def main():
             if account:
                 if pin_number==account.get_pin():
                     account.deposite(amount)
+                    bank.save_accounts()
                 else:
                     print('Wrong pin')
         elif choice=='4':
@@ -119,6 +154,7 @@ def main():
             if account:
                 if pin_number==account.get_pin():
                     account.withdraw(amount)
+                    bank.save_accounts()
                 else:
                     print('wrong pin')
         elif choice=='5':
@@ -132,6 +168,7 @@ def main():
             if account:
                 if pin_number==account.get_pin():
                     bank.tranfer_amount(sender_acc_no,reciver_acc_no,amount)
+                    bank.save_accounts()
                 else:
                     print('wrong pin')
         elif choice=='7':
